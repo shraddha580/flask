@@ -51,8 +51,9 @@ def update(sno):
     if request.method == 'POST':
         todo.title = request.form['title']
         todo.desc = request.form['desc']
+        db.session.add(todo)
         db.session.commit()
-        return "Todo updated!"
+        return redirect("/")
     return render_template('update.html', todo=todo)
 
 if __name__ == '__main__':
