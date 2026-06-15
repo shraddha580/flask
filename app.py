@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request
+from flask import Flask,render_template,request,redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -36,6 +36,24 @@ def products():
     todos=Todo.query.all()
     print(todos)
     return "Todos on the terminal!"
+
+
+@app.route('/delete/<int:sno>')
+def delete(sno):
+    todo = Todo.query.get_or_404(sno)
+    db.session.delete(todo)
+    db.session.commit()
+    return redirect("/")
+
+@app.route('/update/<int:sno>',methods=['GET','POST'])
+def update(sno):
+    todo = Todo.query.get_or_404(sno)
+    if request.method == 'POST':
+        todo.title = request.form['title']
+        todo.desc = request.form['desc']
+        db.session.commit()
+        return "Todo updated!"
+    return render_template('update.html', todo=todo)
 
 if __name__ == '__main__':
     app.run(debug=True)
